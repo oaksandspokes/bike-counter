@@ -26,7 +26,7 @@ async function postCounter(req, res, pool) {
     if (batchTimeStart && batchTimeEnd) {
       insertStatement = 
         `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) 
-        VALUES (ST_PointFromText('point(${lat} ${long})'), '${name}', ${count}, ${batchTimeStart}, ${batchTimeEnd}) RETURNING *`;
+        VALUES (ST_PointFromText('point(${lat} ${long})'), '${name}', ${count}, '${batchTimeStart}', '${batchTimeEnd}') RETURNING *`;
     } else {
       insertStatement = 
         `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}) 
