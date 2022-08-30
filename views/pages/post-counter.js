@@ -14,8 +14,8 @@ async function postCounter(req, res, pool) {
     const name  = req.body.name;
 
     // TODO: convert to UTC
-    const batchTimeStart = req.body.batchTimeStart;
-    const batchTimeEnd   = req.body.batchTimeEnd;
+    const batchTimeStart = req.body.batchTimeStart || 0;
+    const batchTimeEnd   = req.body.batchTimeEnd || 0;
 
     if (!lat || !long || !name) {
       res.send("Error: Lat, Long, and name have to be provided.");
