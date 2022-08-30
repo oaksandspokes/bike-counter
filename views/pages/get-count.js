@@ -24,7 +24,7 @@ async function getCount(req, res, pool) {
 
         // TODO: SQL injection? https://www.npmjs.com/package/pg-format
         const client = await pool.connect();
-        const query = `SELECT COALESCE(SUM(${ROW_NAMES.count}),0) as bike_count, ${ROW_NAMES.name}, ${ROW_NAMES.latLong} FROM ${DATABASE_NAME} ${whereClause} GROUP BY name`;
+        const query = `SELECT COALESCE(SUM(${ROW_NAMES.count}),0) as bike_count, ${ROW_NAMES.name}, ${ROW_NAMES.latLong} FROM ${DATABASE_NAME} ${whereClause} GROUP BY name, lat_long`;
         const result = await client.query(query);
         res.send(result.rows);
         client.release();
