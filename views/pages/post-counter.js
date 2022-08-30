@@ -37,7 +37,7 @@ async function postCounter(req, res, pool) {
     const client = await pool.connect();
     const insertResult = await client.query(insertStatement);
     console.log(insertResult);
-    res.send(insertResult[0]);
+    res.send(insertResult.rows);
     client.release();
   } catch (err) {
     console.error(err);
