@@ -14,18 +14,26 @@ async function postCounter(req, res, pool) {
     const name  = req.body.name;
 
     // TODO: convert to UTC
-    const batchTimeStart = req.body.batchTimeStart || 0;
-    const batchTimeEnd   = req.body.batchTimeEnd || 0;
+    const batchTimeStart = req.body.batchTimeStart;
+    const batchTimeEnd   = req.body.batchTimeEnd;
 
     if (!lat || !long || !name) {
       res.send("Error: Lat, Long, and name have to be provided.");
       return;
     }
 
+    let insertStatement;
+    if (batchTimeStart && batchTimeEnd) {
+      insertStatement = 
+        `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) 
+        VALUES (ST_PointFromText('point(${lat} ${long})'), '${name}', ${count}, ${batchTimeStart}, ${batchTimeEnd}) RETURNING *`;
+    } else {
+      insertStatement = 
+        `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}) 
+        VALUES (ST_PointFromText('point(${lat} ${long})'), '${name}', ${count}) RETURNING *`;
+    }
+
     // TODO: SQL injection? https://www.npmjs.com/package/pg-format
-    const insert = 
-      `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) 
-      VALUES (ST_PointFromText('point(${lat} ${long})'), '${name}', ${count}, ${batchTimeStart}, ${batchTimeEnd}) RETURNING *`;
     console.log(insert);
     const client = await pool.connect();
     const insertResult = await client.query(insert);
