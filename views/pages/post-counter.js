@@ -7,13 +7,11 @@ async function postCounter(req, res, pool) {
     // Validate lat long
     // Grab existing location
     // Add to location count
-    // insert into location (lat_long, name) values (ST_PointFromText('point(31.0528 -99.7185)'), 'test location');
+    // insert into locations_table (lat_long, name) values (ST_PointFromText('point(31.0528 -99.7185)'), 'test location');
     const lat   = req.body.lat;
     const long  = req.body.long;
     const count = req.body.count || 1;
     const name  = req.body.name;
-
-    console.log(req.body);
 
     // TODO: convert to UTC
     const batchTimeStart = req.body.batchTimeStart;
@@ -25,9 +23,11 @@ async function postCounter(req, res, pool) {
     }
 
     // TODO: SQL injection? https://www.npmjs.com/package/pg-format
-    const client = await pool.connect();
     const insert = `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) VALUES($1, $2, $3, $4, $5) RETURNING *`;
-    const values = [`ST_PointFromText('point(${lat} ${long})')`, name, count, batchTimeStart, batchTimeEnd];
+    const values = [`"ST_PointFromText('point(${lat} ${long})')"`, name, count, batchTimeStart, batchTimeEnd];
+    console.log(insert);
+    console.log(values);
+    const client = await pool.connect();
     const insertResult = await client.query(insert, values);
     res.send(insertResult[0]);
     client.release();
