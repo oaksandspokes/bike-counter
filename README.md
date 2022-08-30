@@ -37,13 +37,13 @@ If count is null it defaults to 0.
 batchTimeStart and batchTimeEnd are optional.
 
 ## TODO
-Fix inputs to block sql injections: https://www.npmjs.com/package/pg-format
-Fix security to not allow everything thing to submit data
-Fix name having a '. It currently breaks the insert query.
-Use a timeframe from request to determine when to start count for location
-Use lat_long OR name for querying, we currently only worry about name
-Use a specific granularity for lat_long, I.E. 6 digits.
-Write some tests :D
+* Fix inputs to block sql injections: https://www.npmjs.com/package/pg-format
+* Fix security to not allow everything thing to submit data
+* Fix name having a '. It currently breaks the insert query.
+* Use a timeframe from request to determine when to start count for location
+* Use lat_long OR name for querying, we currently only worry about name
+* Use a specific granularity for lat_long, I.E. 6 digits.
+* Write some tests :D
 
 ## Current table
 create table locations_table (lat_long geometry, name text, bike_count int, batch_time_start timestampz, batch_time_end timestampz, created_date timestampz not null default current_timestamp);
