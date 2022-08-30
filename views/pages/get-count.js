@@ -9,22 +9,21 @@ async function getCount(req, res, pool) {
         const long  = req.query.long;
         const name  = req.params.name;
 
-        console.log(req.params);
-        console.log(req.query);
-
         let whereClause;
 
         if (!!lat && !!long) {
             whereClause = `WHERE ${ROW_NAMES.latLong} = ST_PointFromText('point(${lat} ${long})')`;
         } else if (!!name) {
-            whereClause = `WHERE ${ROW_NAMES.name} = ${name}`;
+            whereClause = `WHERE ${ROW_NAMES.name} = '${name}'`;
         } else {
             res.send("Error: lat_long or name is required.");
             return;
         }
 
         // TODO: validate fromTime is a timestamp.
-        whereClause += ` AND ${ROW_NAMES.createdDate} >= timestamp ${fromTime}`;
+        if (!!fromTime) {
+            whereClause += ` AND ${ROW_NAMES.createdDate} >= timestamp ${fromTime}`;
+        }
 
         // TODO: SQL injection? https://www.npmjs.com/package/pg-format
         const client = await pool.connect();
