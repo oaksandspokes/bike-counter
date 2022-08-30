@@ -29,6 +29,7 @@ async function getCount(req, res, pool) {
         const client = await pool.connect();
         const query = `SELECT (${ROW_NAMES.count, ROW_NAMES.name}) FROM ${DATABASE_NAME} ${whereClause}`;
         const result = await client.query(query);
+        console.log(result);
         res.send(result[0]);
         client.release();
     } catch (err) {
