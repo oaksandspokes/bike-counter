@@ -34,9 +34,9 @@ async function postCounter(req, res, pool) {
     }
 
     // TODO: SQL injection? https://www.npmjs.com/package/pg-format
-    console.log(insert);
+    console.log(insertStatement);
     const client = await pool.connect();
-    const insertResult = await client.query(insert);
+    const insertResult = await client.query(insertStatement);
     res.send(insertResult[0]);
     client.release();
   } catch (err) {
