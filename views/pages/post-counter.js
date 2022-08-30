@@ -23,12 +23,12 @@ async function postCounter(req, res, pool) {
     }
 
     // TODO: SQL injection? https://www.npmjs.com/package/pg-format
-    const insert = `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) VALUES($1, $2, $3, $4, $5) RETURNING *`;
-    const values = ['ST_PointFromText("point(' + lat + " " + long + ')")', name, count, batchTimeStart, batchTimeEnd];
+    const insert = 
+      `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) 
+      VALUES (ST_PointFromText('point(${lat} ${long})'), ${name}, ${count}, ${batchTimeStart}, ${batchTimeEnd}) RETURNING *`;
     console.log(insert);
-    console.log(values);
     const client = await pool.connect();
-    const insertResult = await client.query(insert, values);
+    const insertResult = await client.query(insert);
     res.send(insertResult[0]);
     client.release();
   } catch (err) {
