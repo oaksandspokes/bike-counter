@@ -13,6 +13,8 @@ async function postCounter(req, res, pool) {
     const count = req.body.count || 1;
     const name  = req.body.name;
 
+    console.log(req.body);
+
     // TODO: convert to UTC
     const batchTimeStart = req.body.batchTimeStart;
     const batchTimeEnd   = req.body.batchTimeEnd;
@@ -25,7 +27,7 @@ async function postCounter(req, res, pool) {
     // TODO: SQL injection? https://www.npmjs.com/package/pg-format
     const client = await pool.connect();
     const insert = `INSERT INTO ${DATABASE_NAME} (${ROW_NAMES.latLong}, ${ROW_NAMES.name}, ${ROW_NAMES.count}, ${ROW_NAMES.batchTimeStart}, ${ROW_NAMES.batchTimeEnd}) VALUES($1, $2, $3, $4, $5) RETURNING *`;
-    const values = [ST_PointFromText(`'point(${lat} ${long})'`), name, count, batchTimeStart, batchTimeEnd];
+    const values = [`ST_PointFromText('point(${lat} ${long})')`, name, count, batchTimeStart, batchTimeEnd];
     const insertResult = await client.query(insert, values);
     res.send(insertResult[0]);
     client.release();
